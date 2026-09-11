@@ -1,0 +1,33 @@
+services:
+  nntp-gateway:
+    build: .
+    image: nntp-gateway:latest
+    container_name: nntp-gateway
+    restart: unless-stopped
+    environment:
+      # API the gateway proxies to (worker serves UI + API under this prefix).
+      USENET_BASE_URL: https://entangleit.com/usenetbsv
+      GATEWAY_HOST: 0.0.0.0
+      GATEWAY_PORT: "1119"
+    ports:
+      # 119 = standard NNTP port; 8119 = fallback for networks that filter 119.
+      - "119:1119"
+      - "8119:1119"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - |
+          const net = require('net');
+          const s = net.connect(1119, '127.0.0.1', () => { s.end(); process.exit(0); });
+          s.on('error', () => process.exit(1));
+          setTimeout(() => process.exit(1), 3000);
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"

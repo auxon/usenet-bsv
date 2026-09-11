@@ -1,0 +1,46 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "usenet-bsv",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-08-20",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [
+    { "pattern": "entangleit.com/usenetbsv", "zone_name": "entangleit.com" },
+    { "pattern": "entangleit.com/usenetbsv/*", "zone_name": "entangleit.com" },
+    { "pattern": "entangleit.com/usenet", "zone_name": "entangleit.com" },
+    { "pattern": "entangleit.com/usenet/*", "zone_name": "entangleit.com" }
+  ],
+  // SPA bundle built from frontend/ (vite base /usenetbsv/). The worker rewrites
+  // /usenetbsv/<path> -> /<path> and falls back to index.html for app routes.
+  "assets": {
+    "directory": "frontend/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "d1_databases": [{ "binding": "USENET_DB", "database_name": "entangleit", "database_id": "8f6c1ac7-ab0c-4133-a037-6ac1ed6afa6e" }],
+  "kv_namespaces": [{ "binding": "METER", "id": "5e067a7e5a504fc88c167c4a8db729ab" }],
+  "vars": {
+    "NETWORK": "bsv:mainnet",
+    "PAY_TO": "1DHBH964yuvJnneuUe7EKFpVyJK1Vkz8Y4",
+    "ARC_URL": "https://arc.gorillapool.io/v1",
+    "WOC_URL": "https://api.whatsonchain.com/v1/bsv/main",
+    "PRICE_GROUP_CREATE_SATS": "500",
+    "PRICE_POST_DEFAULT_SATS": "20",
+    "PRICE_READ_DEFAULT_SATS": "0",
+    "PRICE_RELAY_SATS": "10",
+    "PRICE_REPORT_SATS": "5",
+    "PRICE_NICK_SATS": "10",
+    "RATE_LIMIT_PER_MIN": "60",
+    "FEE_SATS": "30",
+    "DUST_FLOOR_SATS": "1",
+    "GATEWAY_PORT": "1119",
+    "GATEWAY_HOST": "127.0.0.1",
+    "NNT_GATEWAY_HOST": "2.29.11.72",
+    "NNT_GATEWAY_PORT": "119",
+    "NNT_GATEWAY_FALLBACK_PORT": "8119"
+  },
+  "observability": { "enabled": true, "head_sampling_rate": 1 }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "usenet-bsv",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "New Usenet with x402 Bitcoin SV payments: hybrid HTTP+x402 API + NNTP gateway, off-chain bodies with hash anchors",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "dev:ui": "cd frontend && npm run dev",
+    "build:ui": "cd frontend && npm install --no-audit --no-fund && npm run build",
+    "deploy": "npm run build:ui && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test 'test/**/*.test.mjs'",
+    "gateway": "node gateway/nntp-gateway.mjs",
+    "e2e:nntp": "node scripts/nntp-e2e.mjs",
+    "db:migrate:local": "wrangler d1 execute entangleit --local --file=schema.sql",
+    "e2e": "node --experimental-strip-types scripts/e2e-smoke.mjs"
+  },
+  "dependencies": {
+    "@bsv/sdk": "^2.4.1",
+    "hono": "^4.7.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.16.5",
+    "typescript": "^5.7.0",
+    "wrangler": "^4.65.0"
+  }
+}
